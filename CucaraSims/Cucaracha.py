@@ -6,7 +6,7 @@
 #   Uruguay
 
 import os
-import gobject
+from gi.repository import GObject
 import pygame
 from pygame.sprite import Sprite
 import random
@@ -23,23 +23,23 @@ BASE_PATH = os.path.dirname(__file__)
 INDICE_ROTACION = 5
 
 
-class Cucaracha(Sprite, gobject.GObject):
+class Cucaracha(Sprite, GObject.GObject):
 
     __gsignals__ = {
-    #"new-edad": (gobject.SIGNAL_RUN_LAST,
-    #    gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT, )),
-    "muere": (gobject.SIGNAL_RUN_LAST,
-        gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT,
-        gobject.TYPE_PYOBJECT)),
-    "muda": (gobject.SIGNAL_RUN_LAST,
-        gobject.TYPE_NONE, []),
-    "reproduce": (gobject.SIGNAL_RUN_LAST,
-        gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT, ))}
+    #"new-edad": (GObject.SignalFlags.RUN_LAST,
+    #    None, (GObject.TYPE_PYOBJECT, )),
+    "muere": (GObject.SignalFlags.RUN_LAST,
+        None, (GObject.TYPE_PYOBJECT,
+        GObject.TYPE_PYOBJECT)),
+    "muda": (GObject.SignalFlags.RUN_LAST,
+        None, []),
+    "reproduce": (GObject.SignalFlags.RUN_LAST,
+        None, (GObject.TYPE_PYOBJECT, ))}
 
     def __init__(self, sexo, ancho, alto, TIME):
 
         Sprite.__init__(self)
-        gobject.GObject.__init__(self)
+        GObject.GObject.__init__(self)
 
         self.acciones = ["camina", "gira", "quieto"]
         self.sexo = sexo
@@ -95,7 +95,6 @@ class Cucaracha(Sprite, gobject.GObject):
 
     def __update_time(self, widget, _dict):
         self.edad = dict(_dict)
-        #self.emit("new-edad", self.edad)
         if self.edad["Dias"] in self.mudas.keys() and self.edad["Horas"] == 0:
             self.__set_muda(escala=self.mudas[self.edad["Dias"]])
             self.emit("muda")
@@ -123,17 +122,6 @@ class Cucaracha(Sprite, gobject.GObject):
         x = self.rect.centerx + self.dx
         y = self.rect.centery + self.dy
         # FIXME: Sin límite en el habitat
-        #if not self.escena.colliderect(self.rect):
-        #    if x > self.escena.width:
-        #        x = 0
-        #    elif x < 0:
-        #        x = self.escena.width
-        #    if y > self.escena.height:
-        #        y = 0
-        #    elif y < 0:
-        #        y = self.escena.height
-        #self.rect.centerx = x
-        #self.rect.centery = y
         if self.escena.collidepoint(x, y):
             self.rect.centerx = x
             self.rect.centery = y
@@ -209,7 +197,7 @@ class Cucaracha(Sprite, gobject.GObject):
                 alimento = alimentos[0]
             x2, y2 = alimento.rect.centerx, alimento.rect.centery
             x1, y1 = self.rect.centerx, self.rect.centery
-            # http://www.vitutor.com/geo/rec/d_4.html
+            # Gets slope point. More info: http://www.vitutor.com/geo/rec/d_4.html
             self.angulo = int(degrees(atan2(y2 - y1, x2 - x1)))
             self.image = pygame.transform.rotate(
                 self.imagen_original, -self.angulo)

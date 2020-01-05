@@ -66,7 +66,7 @@ class JAMediaReproductor(GObject.GObject):
 
     def __sync_message(self, bus, message):
         if message.type == Gst.MessageType.ELEMENT:
-            if message.structure.get_name() == 'prepare-xwindow-id':
+            if message.get_structure.get_name() == 'prepare-xwindow-id':
                 message.src.set_xwindow_id(self.ventana_id)
 
         elif message.type == Gst.MessageType.STATE_CHANGED:
@@ -124,7 +124,7 @@ class JAMediaReproductor(GObject.GObject):
             self.__new_handle(False)
 
         elif message.type == Gst.MessageType.BUFFERING:
-            buf = int(message.structure["buffer-percent"])
+            buf = int(message.get_structure["buffer-percent"])
             if buf < 100 and self.estado == Gst.State.PLAYING:
                 self.emit("loading-buffer", buf)
                 self.__pause()
